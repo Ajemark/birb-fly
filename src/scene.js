@@ -73,7 +73,6 @@ let intersected = 0;
 
 const setScene = async () => {
   gpuTier = await getGPUTier();
-  console.log(gpuTier.tier);
 
   sizes = {
     width: container.offsetWidth,
@@ -913,12 +912,6 @@ const listenTo = () => {
   window.addEventListener("keydown", keyDown.bind(this));
   window.addEventListener("keyup", keyUp.bind(this));
   document
-    .querySelector(".hex-music")
-    .addEventListener("click", () => updateMusicVolume());
-  document
-    .querySelector(".hex-info")
-    .addEventListener("click", () => toggleInfoModal());
-  document
     .querySelector(".info-close")
     .addEventListener("click", () => toggleInfoModal(false));
   document
@@ -981,15 +974,10 @@ const updateMusicVolume = () => {
 
 const pauseIconAnimation = (pause = true) => {
   if (pause) {
-    document.querySelector(".hex-music").classList.add("js-loading");
-    document.querySelector(".hex-info").classList.add("js-loading");
     document.querySelector(".hex-speed").classList.add("js-loading");
     document.querySelector(".hex-birds-eye").classList.add("js-loading");
     return;
   }
-
-  document.querySelector(".hex-music").classList.remove("js-loading");
-  document.querySelector(".hex-info").classList.remove("js-loading");
   document.querySelector(".hex-speed").classList.remove("js-loading");
   document.querySelector(".hex-birds-eye").classList.remove("js-loading");
 };

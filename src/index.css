@@ -71,7 +71,7 @@ body {
 .page-loader {
   width: calc(100vw - 15px);
   height: calc(100vh - 15px);
-  background-color: #f5e6d3;
+  background-color: #1e81b0;
   position: absolute;
   z-index: 100;
   top: 50%;
@@ -288,7 +288,7 @@ body {
 }
 
 .hex-one {
-  background: #98bf06;
+  background: #1e81b0;
   z-index: 2;
 }
 .hex-one:hover + .hex-two {
@@ -296,7 +296,7 @@ body {
 }
 
 .hex-two {
-  background: #367308;
+  background: #1eb096;
   z-index: 1;
   transform-origin: bottom right;
   transform: rotate(-14deg);
@@ -321,7 +321,7 @@ body {
 }
 
 .info-box {
-  background-color: #efdec8;
+  background-color: #1e81b0;
   width: 100%;
   max-width: 500px;
   margin: 30px;
