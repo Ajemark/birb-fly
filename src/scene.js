@@ -12,82 +12,61 @@ import { getGPUTier } from "https://cdn.jsdelivr.net/npm/detect-gpu@5.0.17/+esm"
 const container = document.querySelector(".container");
 const canvas = document.querySelector(".canvas");
 
-let gpuTier: { tier: number },
+let gpuTier,
   sizes,
-  scene: THREE.Scene,
-  camera: THREE.PerspectiveCamera,
-  camY: number | undefined,
-  camZ: number | undefined,
-  renderer: THREE.WebGLRenderer,
-  clock: THREE.Clock,
-  raycaster: THREE.Raycaster,
-  distance: number,
-  flyingIn: boolean,
-  eggs: any[] | undefined,
-  movingCharDueToDistance: boolean,
-  movingCharTimeout: NodeJS.Timeout | undefined,
-  currentPos: THREE.Vector3,
-  currentLookAt: THREE.Vector3,
-  lookAtPosZ: number | undefined,
-  thirdPerson: boolean,
-  doubleSpeed: boolean,
-  character:
-    | THREE.Object3D<THREE.Object3DEventMap>
-    | THREE.AnimationObjectGroup,
-  charPosYIncrement: number,
-  charRotateYIncrement: number,
-  charRotateYMax: number,
-  mixer: THREE.AnimationMixer,
-  charAnimation: THREE.AnimationAction,
-  gliding: boolean,
-  charAnimationTimeout: string | number | NodeJS.Timeout | undefined,
-  charNeck: { rotation: { x: number; y: number } },
-  charBody: { rotation: { x: number; y: number } },
-  gltfLoader: { loadAsync: (arg0: string) => any },
-  grassMeshes: {
-    [x: string]: THREE.InstancedMesh<any, any, THREE.InstancedMeshEventMap>;
-    grassMeshOne?: any;
-    grassMeshTwo?: any;
-  },
-  treeMeshes: {
-    [x: string]: THREE.InstancedMesh<any, any, THREE.InstancedMeshEventMap>;
-    treeMeshOne?: any;
-    treeMeshTwo?: any;
-  },
-  centerTile: { xFrom: any; yFrom: any; xTo: any; yTo: any },
-  tileWidth: number,
-  amountOfHexInTile: number,
-  simplex: { noise2D: (arg0: number, arg1: number) => number },
-  maxHeight: number,
-  snowHeight: number,
-  lightSnowHeight: number,
-  rockHeight: number,
-  forestHeight: number,
-  lightForestHeight: number,
-  grassHeight: number,
-  sandHeight: number,
-  shallowWaterHeight: number,
-  waterHeight: number,
-  deepWaterHeight: number,
-  textures: {
-    snow: any;
-    lightSnow: any;
-    rock: any;
-    forest: any;
-    lightForest: any;
-    grass: any;
-    sand: any;
-    shallowWater: any;
-    water: any;
-    deepWater: any;
-  },
-  terrainTiles: { hex: { name: any } }[],
-  activeTile: any,
-  activeKeysPressed: number[],
-  bgMusic: { play: () => void; volume: (arg0: number) => void },
-  muteBgMusic: boolean,
-  infoModalDisplayed: boolean,
-  loadingDismissed: boolean;
+  scene,
+  camera,
+  camY,
+  camZ,
+  renderer,
+  clock,
+  raycaster,
+  distance,
+  flyingIn,
+  eggs,
+  movingCharDueToDistance,
+  movingCharTimeout,
+  currentPos,
+  currentLookAt,
+  lookAtPosZ,
+  thirdPerson,
+  doubleSpeed,
+  character,
+  charPosYIncrement,
+  charRotateYIncrement,
+  charRotateYMax,
+  mixer,
+  charAnimation,
+  gliding,
+  charAnimationTimeout,
+  charNeck,
+  charBody,
+  gltfLoader,
+  grassMeshes,
+  treeMeshes,
+  centerTile,
+  tileWidth,
+  amountOfHexInTile,
+  simplex,
+  maxHeight,
+  snowHeight,
+  lightSnowHeight,
+  rockHeight,
+  forestHeight,
+  lightForestHeight,
+  grassHeight,
+  sandHeight,
+  shallowWaterHeight,
+  waterHeight,
+  deepWaterHeight,
+  textures,
+  terrainTiles,
+  activeTile,
+  activeKeysPressed,
+  bgMusic,
+  muteBgMusic,
+  infoModalDisplayed,
+  loadingDismissed;
 
 const eggsGroup = new THREE.Group();
 let intersected = 0;
@@ -148,11 +127,11 @@ const setScene = async () => {
   setInterval(async () => {
     console.log(eggs?.length);
     await setEggs();
-  }, 300000);
+  }, 20000);
 };
 
 const joystick = () => {
-  const calcJoystickDir = (deg: number) => {
+  const calcJoystickDir = (deg) => {
     activeKeysPressed = [];
 
     if (deg < 22.5 || deg >= 337.5) activeKeysPressed.push(39); // right
@@ -186,9 +165,7 @@ const joystick = () => {
 
   const manager = nipplejs.create(joystickOptions);
 
-  manager.on("move", (e: any, data: { angle: { degree: any } }) =>
-    calcJoystickDir(data.angle.degree)
-  );
+  manager.on("move", (e, data) => calcJoystickDir(data.angle.degree));
   manager.on("end", () => (activeKeysPressed = []));
 };
 
@@ -305,11 +282,11 @@ const setTerrainValues = () => {
 };
 
 const setEggs = async () => {
-  // if (flyingIn) return;
+  console.log(intersected);
   eggs = [];
   const amountOfClouds = 1;
 
-  const getRandom = (max: number, min: number) => {
+  const getRandom = (max, min) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
 
@@ -493,8 +470,8 @@ const setCam = () => {
   doubleSpeed = false;
 };
 
-const createSurroundingTiles = (newActiveTile: string) => {
-  const setCenterTile = (parsedCoords: { x: any; y: any }) => {
+const createSurroundingTiles = (newActiveTile) => {
+  const setCenterTile = (parsedCoords) => {
     centerTile = {
       xFrom: parsedCoords.x,
       xTo: parsedCoords.x + tileWidth,
@@ -557,9 +534,9 @@ const createTile = () => {
     y: centerTile.yFrom,
   });
 
-  if (terrainTiles.some((el: { name: string }) => el.name === tileName)) return; // Returns if tile already exists
+  if (terrainTiles.some((el) => el.name === tileName)) return; // Returns if tile already exists
 
-  const tileToPosition = (tileX: number, height: number, tileY: number) => {
+  const tileToPosition = (tileX, height, tileY) => {
     return new THREE.Vector3(
       (tileX + (tileY % 2) * 0.5) * 1.68,
       height / 2,
@@ -567,7 +544,7 @@ const createTile = () => {
     );
   };
 
-  const setHexMesh = (geo: THREE.CylinderGeometry) => {
+  const setHexMesh = (geo) => {
     const mat = new THREE.MeshStandardMaterial();
     const mesh = new THREE.InstancedMesh(geo, mat, amountOfHexInTile);
 
@@ -738,14 +715,14 @@ const toggleBirdsEyeView = () => {
   thirdPerson = thirdPerson ? false : true;
 };
 
-const keyDown = (event: { keyCode: any }) => {
+const keyDown = (event) => {
   if (infoModalDisplayed) return;
 
   if (!activeKeysPressed.includes(event.keyCode))
     activeKeysPressed.push(event.keyCode);
 };
 
-const keyUp = (event: { keyCode: number }) => {
+const keyUp = (event) => {
   if (event.keyCode === 32) toggleDoubleSpeed();
   if (event.keyCode === 90) toggleBirdsEyeView();
 
@@ -910,7 +887,7 @@ const calcCharPos = () => {
   raycaster.set(character.position, new THREE.Vector3(0, -1, -0.1));
 
   const intersects = raycaster.intersectObjects(
-    terrainTiles.map((el: { hex: any }) => el.hex)
+    terrainTiles.map((el) => el.hex)
   );
 
   if (activeTile !== intersects[0].object.name)
@@ -952,27 +929,17 @@ const listenTo = () => {
     .addEventListener("click", () => toggleBirdsEyeView());
 };
 
-const cleanUp = (obj: {
-  geometry: { dispose: () => void };
-  material: { dispose: () => void };
-  traverse: (arg0: (el: any) => void) => void;
-}) => {
+const cleanUp = (obj) => {
   if (obj.geometry && obj.material) {
     obj.geometry.dispose();
     obj.material.dispose();
   } else {
-    obj.traverse(
-      (el: {
-        isMesh: any;
-        geometry: { dispose: () => void };
-        material: { dispose: () => void };
-      }) => {
-        if (el.isMesh) {
-          el.geometry.dispose();
-          el.material.dispose();
-        }
+    obj.traverse((el) => {
+      if (el.isMesh) {
+        el.geometry.dispose();
+        el.material.dispose();
       }
-    );
+    });
   }
 
   scene.remove(obj);
